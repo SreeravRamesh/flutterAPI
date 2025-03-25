@@ -1,7 +1,10 @@
 import 'package:api/Api2/providerr.dart';
 import 'package:api/Api2/view/recipeGrid.dart';
+import 'package:api/Api2/view/search.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+
 
 class RecipeListPage extends StatelessWidget {
   const RecipeListPage({super.key});
@@ -13,10 +16,20 @@ class RecipeListPage extends StatelessWidget {
       appBar: AppBar(
         title: Text("Recipes"),
         actions: [
-          IconButton(onPressed: (){}, icon: Icon(Icons.search))
+          IconButton(onPressed: () async{
+            final String? query = await showSearch(
+                context: context,
+                delegate: RecipeSearchDelegate(),
+            );
+            if(query != null && query.isNotEmpty)
+              {
+                recipeProvider.searchRecipes(query);
+              }
+          },
+              icon: Icon(Icons.search))
         ],
       ),
-      body: recipeProvider.recipesnew.isNotEmpty
+      body: recipeProvider.recipesnew.isEmpty
         ? Center(child: CircularProgressIndicator(),)
         : LayoutBuilder(
           builder: (context,constraints){
